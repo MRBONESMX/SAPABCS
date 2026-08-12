@@ -91,7 +91,6 @@ export const SECTORES_MAPA_LA_PAZ = [
   }
 ];
 
-// NOTIFICACIONES CON ATRIBUCIÓN EXCLUSIVA Y DIFERENCIADA POR COLONIA
 export const MOCK_NOTIFICACIONES = [
   {
     id: 101,
@@ -139,7 +138,7 @@ export const MOCK_NOTIFICACIONES = [
     descripcion: 'Trabajos generales de desarenado en la planta potabilizadora Carrizal. No afecta el tandeo del día de hoy.',
     tipo: 'info',
     tiempo: 'Hace 5 horas',
-    coloniaId: null, // Alerta general para todo La Paz
+    coloniaId: null,
     coloniaNombre: null,
     leida: true
   }
@@ -159,6 +158,7 @@ export const FUGAS_REPORTADAS_MOCK = [
     estado: 'Verificado por Comunidad',
     reportadoPor: 'María Elena Castro',
     contrato: 'CON-48201',
+    imagenUrl: '/fuga1.png', // Evidencia fotográfica
     coords: { top: '38%', left: '42%' }
   },
   {
@@ -174,6 +174,7 @@ export const FUGAS_REPORTADAS_MOCK = [
     estado: 'En Validación',
     reportadoPor: 'Jorge Benítez',
     contrato: 'CON-11029',
+    imagenUrl: '/fuga2.png', // Evidencia fotográfica
     coords: { top: '60%', left: '68%' }
   }
 ];
