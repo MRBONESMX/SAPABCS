@@ -1,13 +1,11 @@
 import React, { useState } from 'react';
-import { Calendar as CalendarIcon, Clock, Droplet, Info, X, AlertTriangle, Wrench, MapPin, ZapOff, DropletOff, TrendingDown, AlertOctagon } from 'lucide-react';
+import { Calendar as CalendarIcon, Clock, Droplet, Info, X, AlertTriangle, Wrench, MapPin, ZapOff, DropletOff, TrendingDown, AlertOctagon, ChevronDown } from 'lucide-react';
 import { PERCANCES_MOCK } from '../../data/mockData';
 
-export default function WaterCalendar({ colonia }) {
+export default function WaterCalendar({ colonia, colonias, onSelectColonia }) {
   const [diaSeleccionado, setDiaSeleccionado] = useState(null);
 
-  // Obtener el día actual en tiempo real del sistema
-  const hoyReal = new Date().getDate(); // Ej. 12
-
+  const hoyReal = new Date().getDate();
   const diasMes = Array.from({ length: 31 }, (_, i) => i + 1);
 
   const percancesColonia = PERCANCES_MOCK[colonia.id] || [];
@@ -67,22 +65,62 @@ export default function WaterCalendar({ colonia }) {
           </span>
         </div>
 
-        {/* Colonia Seleccionada */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '6px', background: '#F8FAFC', padding: '8px 12px', borderRadius: '8px', border: '1px solid var(--border-subtle)', margin: '8px 0 12px 0' }}>
-          <MapPin size={16} color="var(--water-accent)" />
-          <span style={{ fontSize: '13px', fontWeight: 800, color: 'var(--primary-navy)' }}>
-            Programación de: <u>{colonia.nombre}</u> ({colonia.zona})
-          </span>
-        </div>
+        {/* SELECTOR RÁPIDO PARA CAMBIAR DE COLONIA DIRECTO EN EL CALENDARIO */}
+        {colonias && onSelectColonia && (
+          <div style={{ marginTop: '10px', marginBottom: '12px' }}>
+            <label style={{ fontSize: '10px', fontWeight: 800, textTransform: 'uppercase', color: 'var(--text-muted)', display: 'block', marginBottom: '4px' }}>
+              📍 Seleccionar Colonia o Sector:
+            </label>
+            <div style={{ position: 'relative' }}>
+              <select
+                value={colonia.id}
+                onChange={(e) => {
+                  const encontrada = colonias.find((c) => c.id === e.target.value);
+                  if (encontrada) onSelectColonia(encontrada);
+                }}
+                style={{
+                  width: '100%',
+                  height: '42px',
+                  background: '#F0F9FF',
+                  border: '1.5px solid #BAE6FD',
+                  borderRadius: '10px',
+                  padding: '0 36px 0 36px',
+                  fontSize: '13px',
+                  fontWeight: 800,
+                  color: 'var(--primary-navy)',
+                  appearance: 'none',
+                  outline: 'none',
+                  cursor: 'pointer'
+                }}
+              >
+                {colonias.map((c) => (
+                  <option key={c.id} value={c.id}>
+                    {c.nombre} ({c.zona})
+                  </option>
+                ))}
+              </select>
+              <MapPin 
+                size={16} 
+                color="var(--water-accent)" 
+                style={{ position: 'absolute', left: '12px', top: '13px', pointerEvents: 'none' }} 
+              />
+              <ChevronDown 
+                size={16} 
+                color="var(--primary-navy)" 
+                style={{ position: 'absolute', right: '12px', top: '13px', pointerEvents: 'none' }} 
+              />
+            </div>
+          </div>
+        )}
 
         <p style={{ fontSize: '12px', color: 'var(--text-muted)' }}>
-          Días con tandeo: <b>{totalDiasConAgua} días</b>. El día de hoy está resaltado con un marco destacado.
+          Días con tandeo programado en <b>{colonia.nombre}</b>: <b>{totalDiasConAgua} días</b>. Toca cualquier fecha para ver el detalle de servicio o percances.
         </p>
 
         {/* Leyenda */}
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px', marginTop: '12px', paddingTop: '10px', borderTop: '1px solid var(--border-subtle)' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '11px', fontWeight: 700, color: 'var(--water-accent)' }}>
-            <Droplet size={13} color="var(--water-accent)" /> Con Agua
+            <Droplet size={13} color="var(--water-accent)" /> Con Agua ({totalDiasConAgua} días)
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '11px', fontWeight: 700, color: 'var(--no-water-gray)' }}>
             <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#CBD5E1' }} /> Sin Agua
@@ -96,7 +134,7 @@ export default function WaterCalendar({ colonia }) {
         </div>
       </div>
 
-      {/* Grid del Mes con el Día de HOY Resaltado */}
+      {/* Grid del Mes */}
       <div className="clean-card">
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', textAlign: 'center', gap: '4px', marginBottom: '8px' }}>
           {['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'].map((d) => (
@@ -136,7 +174,6 @@ export default function WaterCalendar({ colonia }) {
                   borderRadius: '10px',
                   background: bg,
                   color: color,
-                  // Resaltado visual prominente para el día de HOY
                   border: isHoy ? '3px solid #0F172A' : border,
                   boxShadow: isHoy ? '0 0 0 2px #38BDF8, 0 4px 12px rgba(0,0,0,0.15)' : 'none',
                   transform: isHoy ? 'scale(1.05)' : 'none',
@@ -159,7 +196,6 @@ export default function WaterCalendar({ colonia }) {
                   </div>
                 )}
 
-                {/* Badge HOY Prominente */}
                 {isHoy && (
                   <span style={{ fontSize: '8px', background: '#0F172A', color: '#38BDF8', padding: '1px 4px', borderRadius: '4px', position: 'absolute', bottom: '2px', fontWeight: 900, letterSpacing: '0.5px' }}>
                     HOY

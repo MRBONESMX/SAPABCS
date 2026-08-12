@@ -50,7 +50,7 @@ export default function App() {
           </div>
         </div>
         
-        {/* Badge de ubicación activa */}
+        {/* Badge de colonia activa */}
         <span style={{ fontSize: '11px', fontWeight: 700, background: 'var(--water-light)', color: 'var(--primary-blue)', padding: '4px 8px', borderRadius: '6px', display: 'flex', alignItems: 'center', gap: '4px' }}>
           <MapPin size={12} /> {coloniaSeleccionada.nombre}
         </span>
@@ -70,7 +70,11 @@ export default function App() {
         )}
 
         {tabActiva === 'calendario' && (
-          <WaterCalendar colonia={coloniaSeleccionada} />
+          <WaterCalendar 
+            colonia={coloniaSeleccionada}
+            colonias={SECTORES_MAPA_LA_PAZ}
+            onSelectColonia={setColoniaSeleccionada}
+          />
         )}
 
         {tabActiva === 'guias' && (
