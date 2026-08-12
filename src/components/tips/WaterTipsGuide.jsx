@@ -1,8 +1,32 @@
 import React, { useState } from 'react';
-import { Droplet, Sun, Moon, CloudRain, ShieldCheck, Thermometer, Sparkles, CheckCircle2, ChevronRight, Info, Lightbulb, Clock } from 'lucide-react';
+import { Droplet, Sun, Moon, CloudRain, ShieldCheck, Thermometer, Sparkles, CheckCircle2, ChevronRight, Info, Lightbulb, Clock, Calculator, Users, Leaf, ArrowRight, Gauge } from 'lucide-react';
 
 export default function WaterTipsGuide() {
   const [tipSeleccionado, setTipSeleccionado] = useState(null);
+
+  // Estados de la Calculadora de Consumo Domiciliario
+  const [numPersonas, setNumPersonas] = useState(3);
+  const [minutosDucha, setMinutosDucha] = useState(10);
+  const [frecuenciaLavado, setFrecuenciaLavado] = useState(3); // Cargas a la semana
+  const [tieneJardin, setTieneJardin] = useState(false);
+
+  // Lógica de Cálculo de Consumo (Litros por Persona al día)
+  // Ducha: ~9L por minuto. Sanitarios: ~24L/día persona. Lavado de trastes/ropa y aseo: ~40L/día persona.
+  const litrosDuchaPersona = minutosDucha * 9;
+  const litrosInodoroYAseo = 30; // Promedio estándar
+  const litrosRopaTrastesPersona = (frecuenciaLavado * 60) / 7; // Distribución diaria
+  const litrosJardinPersona = tieneJardin ? 25 : 0;
+
+  // Consumo Real Estimado por Persona al Día
+  const consumoPromedioPersona = Math.round(litrosDuchaPersona + litrosInodoroYAseo + litrosRopaTrastesPersona + litrosJardinPersona);
+  const consumoTotalHogar = consumoPromedioPersona * numPersonas;
+
+  // Consumo Ecológico Sostenible Recomendado (OMS / Meta Ambiental BCS): 100 L/día persona
+  const META_ECOLOGICA_PERSONA = 100;
+  const metaTotalHogar = META_ECOLOGICA_PERSONA * numPersonas;
+
+  const diferenciaConsumo = consumoPromedioPersona - META_ECOLOGICA_PERSONA;
+  const esConsumoEcológico = consumoPromedioPersona <= META_ECOLOGICA_PERSONA;
 
   const CONSEJOS_AGUA = [
     {
@@ -40,7 +64,7 @@ export default function WaterTipsGuide() {
       tag: 'Regadera de 5 min',
       detalles: [
         'Coloca una cubeta mientras sale el agua caliente; esta agua sirve para el inodoro o aseo del hogar.',
-        'Una ducha de 5 minutos consume 40 litros; una de 15 minutos supera los 130 litros.',
+        'Una ducha de 5 minutos consume 45 litros; una de 15 minutos supera los 135 litros.',
         'Cierra la llave al enjabonarte o lavarte los dientes.'
       ]
     },
@@ -62,7 +86,7 @@ export default function WaterTipsGuide() {
   return (
     <div style={{ paddingBottom: '20px' }}>
       
-      {/* Header Informativo Limpio */}
+      {/* Header Informativo */}
       <div className="clean-card" style={{ marginBottom: '16px', borderTop: '4px solid var(--water-accent)' }}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '6px' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
@@ -76,11 +100,136 @@ export default function WaterTipsGuide() {
           </span>
         </div>
         <p style={{ fontSize: '12px', color: 'var(--text-muted)' }}>
-          Aprende a aprovechar el agua del tandeo en tu hogar, maximizar la reserva de tinacos y reducir el desperdicio.
+          Aprende a aprovechar el agua del tandeo en tu hogar y calcula la huella hídrica de tu familia.
         </p>
       </div>
 
-      {/* RECOMENDACIÓN RÁPIDA SEGÚN LA HORA DEL DÍA */}
+      {/* 🧮 CALCULADORA INTERACTIVA DE CONSUMO HÍDRICO HOGAR VS META ECOLÓGICA */}
+      <div className="clean-card" style={{ marginBottom: '16px', border: '1.5px solid var(--water-accent)', background: '#F8FAFC' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '10px', borderBottom: '1px solid var(--border-subtle)', paddingBottom: '8px' }}>
+          <div style={{ background: 'var(--primary-navy)', padding: '6px', borderRadius: '8px', color: 'white' }}>
+            <Calculator size={18} />
+          </div>
+          <div>
+            <h4 style={{ fontSize: '15px', fontWeight: 800, color: 'var(--primary-navy)', margin: 0 }}>
+              Calculadora de Consumo Familiar
+            </h4>
+            <span style={{ fontSize: '11px', color: 'var(--text-muted)', fontWeight: 600 }}>
+              Estima tu consumo por persona y compara con la Meta Ambiental
+            </span>
+          </div>
+        </div>
+
+        {/* Formulario Interactivo de Parámetros */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginBottom: '14px' }}>
+          
+          {/* Número de Habitantes */}
+          <div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '11px', fontWeight: 700, color: 'var(--primary-navy)', marginBottom: '4px' }}>
+              <span>👥 Habitantes en la casa:</span>
+              <span style={{ color: 'var(--water-accent)', fontWeight: 800 }}>{numPersonas} personas</span>
+            </div>
+            <input
+              type="range"
+              min="1"
+              max="8"
+              value={numPersonas}
+              onChange={(e) => setNumPersonas(Number(e.target.value))}
+              style={{ width: '100%', accentColor: 'var(--water-accent)' }}
+            />
+          </div>
+
+          {/* Minutos en la Ducha por persona */}
+          <div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '11px', fontWeight: 700, color: 'var(--primary-navy)', marginBottom: '4px' }}>
+              <span>🚿 Duración promedio de ducha:</span>
+              <span style={{ color: 'var(--water-accent)', fontWeight: 800 }}>{minutosDucha} minutos</span>
+            </div>
+            <input
+              type="range"
+              min="3"
+              max="20"
+              value={minutosDucha}
+              onChange={(e) => setMinutosDucha(Number(e.target.value))}
+              style={{ width: '100%', accentColor: 'var(--water-accent)' }}
+            />
+          </div>
+
+          {/* Cargas de lavadora a la semana */}
+          <div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '11px', fontWeight: 700, color: 'var(--primary-navy)', marginBottom: '4px' }}>
+              <span>🧺 Cargas de lavadora por semana:</span>
+              <span style={{ color: 'var(--water-accent)', fontWeight: 800 }}>{frecuenciaLavado} cargas</span>
+            </div>
+            <input
+              type="range"
+              min="1"
+              max="10"
+              value={frecuenciaLavado}
+              onChange={(e) => setFrecuenciaLavado(Number(e.target.value))}
+              style={{ width: '100%', accentColor: 'var(--water-accent)' }}
+            />
+          </div>
+
+          {/* Opción de Jardín / Plantas */}
+          <label style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', fontSize: '12px', fontWeight: 700, color: 'var(--primary-navy)' }}>
+            <input
+              type="checkbox"
+              checked={tieneJardin}
+              onChange={(e) => setTieneJardin(e.target.checked)}
+            />
+            <span>🌱 Tengo jardín o macetas grandes que requieren riego constante</span>
+          </label>
+
+        </div>
+
+        {/* COMPARATIVA VISUAL: CONSUMO ESTIMADO VS CONSUMO ECOLÓGICO */}
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px', marginBottom: '12px' }}>
+          
+          {/* Consumo Calculado Actual */}
+          <div style={{ background: esConsumoEcológico ? '#E6F9F0' : '#FFF4EF', padding: '10px 12px', borderRadius: '10px', border: `1px solid ${esConsumoEcológico ? '#10B981' : '#FF6B35'}` }}>
+            <span style={{ fontSize: '10px', fontWeight: 800, color: 'var(--text-muted)', textTransform: 'uppercase', display: 'block' }}>
+              Tu Consumo Actual
+            </span>
+            <div style={{ fontSize: '20px', fontWeight: 900, color: esConsumoEcológico ? '#047857' : '#C2410C' }}>
+              {consumoPromedioPersona} <span style={{ fontSize: '11px', fontWeight: 700 }}>L/día persona</span>
+            </div>
+            <span style={{ fontSize: '10px', color: 'var(--text-muted)', fontWeight: 600 }}>
+              Total hogar: {consumoTotalHogar} L/día
+            </span>
+          </div>
+
+          {/* Meta Ecológica Recomendada */}
+          <div style={{ background: '#F0F9FF', padding: '10px 12px', borderRadius: '10px', border: '1px solid #BAE6FD' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '10px', fontWeight: 800, color: 'var(--water-accent)', textTransform: 'uppercase' }}>
+              <Leaf size={12} color="#10B981" /> Meta Ecológica
+            </div>
+            <div style={{ fontSize: '20px', fontWeight: 900, color: 'var(--primary-navy)' }}>
+              {META_ECOLOGICA_PERSONA} <span style={{ fontSize: '11px', fontWeight: 700 }}>L/día persona</span>
+            </div>
+            <span style={{ fontSize: '10px', color: 'var(--text-muted)', fontWeight: 600 }}>
+              Meta hogar: {metaTotalHogar} L/día
+            </span>
+          </div>
+
+        </div>
+
+        {/* VERDICTO Y CONSEJO ECOLÓGICO */}
+        <div style={{ padding: '8px 12px', borderRadius: '8px', background: esConsumoEcológico ? '#E6F9F0' : '#FEF3C7', border: `1px solid ${esConsumoEcológico ? '#10B981' : '#F59E0B'}`, fontSize: '12px', color: 'var(--primary-navy)' }}>
+          {esConsumoEcológico ? (
+            <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontWeight: 700, color: '#047857' }}>
+              <CheckCircle2 size={16} /> ¡Felicidades! Tu hogar está dentro del rango de Consumo Ecológico Sostenible.
+            </div>
+          ) : (
+            <div style={{ fontWeight: 600 }}>
+              🌿 <b>Oportunidad de Apoyo Ambiental:</b> Consumes <b>{diferenciaConsumo} Litros más</b> del objetivo ecológico por persona. Reduciendo la ducha a 5 min ahorrarías hasta <b>{numPersonas * 45} Litros al día</b> en tu hogar.
+            </div>
+          )}
+        </div>
+
+      </div>
+
+      {/* RECOMENDACIÓN DÍA / NOCHE */}
       <div 
         className="clean-card" 
         style={{ 
@@ -101,7 +250,7 @@ export default function WaterTipsGuide() {
         </p>
       </div>
 
-      {/* LISTADO DE TARJETAS INFORMATIVAS INTERACTIVAS */}
+      {/* LISTADO DE TARJETAS INFORMATIVAS */}
       <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
         {CONSEJOS_AGUA.map((tip) => (
           <div
@@ -147,7 +296,7 @@ export default function WaterTipsGuide() {
         ))}
       </div>
 
-      {/* MODAL DETALLADO DEL CONSEJO SELECCIONADO */}
+      {/* MODAL DETALLADO */}
       {tipSeleccionado && (
         <div className="bottom-sheet-overlay" onClick={() => setTipSeleccionado(null)}>
           <div className="bottom-sheet" onClick={(e) => e.stopPropagation()}>
