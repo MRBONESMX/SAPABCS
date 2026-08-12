@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { MapPin, Navigation, Droplet, Clock, Gauge, ShieldCheck, CheckCircle2, AlertTriangle, Wrench, ChevronRight, Search, Calendar as CalendarIcon } from 'lucide-react';
+import { MapPin, Navigation, Droplet, Clock, Gauge, ShieldCheck, CheckCircle2, AlertTriangle, Wrench, ChevronRight, Search, Calendar as CalendarIcon, Info, Sparkles, Activity } from 'lucide-react';
 
 export default function WaterStatusCard({ colonia, colonias, onSelectColonia, onVerCalendarioColonia }) {
   const [busqueda, setBusqueda] = useState('');
@@ -39,58 +39,201 @@ export default function WaterStatusCard({ colonia, colonias, onSelectColonia, on
 
   const { estado, horario, presion, presionPorcentaje, cisternaRecomendada } = colonia;
 
-  const estadoBadge = {
+  // Configuración de banners de estado ultra entendibles
+  const estadoHeroConfig = {
     con_agua: {
-      texto: 'CON AGUA HOY',
-      bg: '#E6F9F0',
-      color: '#047857',
-      icon: <Droplet size={14} color="#10B981" />
+      tituloBanner: 'SERVICIO DE AGUA ACTIVO',
+      subtitulo: 'Tandeo disponible hoy en tu red residencial',
+      colorPrincipal: '#10B981',
+      bgHeader: 'linear-gradient(135deg, #064E3B, #047857)',
+      colorBadge: '#047857',
+      bgBadge: '#E6F9F0',
+      iconoHero: <Droplet size={32} color="#10B981" fill="#10B981" />,
+      iconoBadge: <CheckCircle2 size={16} color="#10B981" />,
+      indicadorText: 'Flujo Óptimo'
     },
     sin_agua: {
-      texto: 'SIN AGUA HOY',
-      bg: '#F1F5F9',
-      color: '#475569',
-      icon: <AlertTriangle size={14} color="#64748B" />
+      tituloBanner: 'SIN AGUA EN RED HOY',
+      subtitulo: 'Día sin tandeo programado en este sector',
+      colorPrincipal: '#64748B',
+      bgHeader: 'linear-gradient(135deg, #1E293B, #334155)',
+      colorBadge: '#475569',
+      bgBadge: '#F1F5F9',
+      iconoHero: <AlertTriangle size={32} color="#94A3B8" />,
+      iconoBadge: <AlertTriangle size={16} color="#64748B" />,
+      indicadorText: 'Presión 0%'
     },
     mantenimiento: {
-      texto: 'EN MANTENIMIENTO',
-      bg: '#FFEDD5',
-      color: '#C2410C',
-      icon: <Wrench size={14} color="#F97316" />
+      tituloBanner: 'TRABAJOS DE MANTENIMIENTO',
+      subtitulo: 'Cuadrilla de SAPA reparando tubería de red principal',
+      colorPrincipal: '#F97316',
+      bgHeader: 'linear-gradient(135deg, #7C2D12, #C2410C)',
+      colorBadge: '#C2410C',
+      bgBadge: '#FFEDD5',
+      iconoHero: <Wrench size={32} color="#FB923C" />,
+      iconoBadge: <Wrench size={16} color="#F97316" />,
+      indicadorText: 'En Reparación'
     }
   }[estado];
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
       
-      {/* 1. GEOLOCALIZACIÓN Y BUSCADOR */}
+      {/* 1. HERO HEROIC HERO CARD - IMPACTANTE Y ULTRA ENTENDIBLE AL INGRESAR */}
+      <div 
+        className="clean-card" 
+        style={{ 
+          marginBottom: 0, 
+          padding: 0, 
+          overflow: 'hidden',
+          border: `2px solid ${estadoHeroConfig.colorPrincipal}`,
+          boxShadow: '0 8px 24px -4px rgba(15, 23, 42, 0.12)'
+        }}
+      >
+        {/* Banner Superior Destacado por Color de Estado */}
+        <div 
+          style={{ 
+            background: estadoHeroConfig.bgHeader, 
+            color: 'white', 
+            padding: '20px',
+            position: 'relative'
+          }}
+        >
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
+            <span 
+              style={{ 
+                background: 'white', 
+                color: estadoHeroConfig.colorBadge, 
+                padding: '4px 10px', 
+                borderRadius: '8px', 
+                fontSize: '11px', 
+                fontWeight: 900, 
+                display: 'inline-flex', 
+                alignItems: 'center', 
+                gap: '6px',
+                boxShadow: '0 2px 6px rgba(0,0,0,0.1)'
+              }}
+            >
+              {estadoHeroConfig.iconoBadge}
+              {estadoHeroConfig.tituloBanner}
+            </span>
+            <span style={{ fontSize: '11px', opacity: 0.85, fontWeight: 700 }}>
+              Sector: {colonia.zona}
+            </span>
+          </div>
+
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginTop: '10px' }}>
+            <div>
+              <h2 style={{ fontSize: '26px', fontWeight: 900, letterSpacing: '-0.5px', marginBottom: '2px' }}>
+                {colonia.nombre}
+              </h2>
+              <p style={{ fontSize: '13px', opacity: 0.9 }}>
+                {estadoHeroConfig.subtitulo}
+              </p>
+            </div>
+            
+            {/* Ícono Ilustrativo SVG XL */}
+            <div style={{ background: 'rgba(255,255,255,0.15)', padding: '10px', borderRadius: '14px', backdropFilter: 'blur(4px)' }}>
+              {estadoHeroConfig.iconoHero}
+            </div>
+          </div>
+        </div>
+
+        {/* Cuerpo de la Tarjeta con Métricas Limpias */}
+        <div style={{ padding: '18px', background: 'white' }}>
+          
+          {/* Grilla de Métricas de Alto Rendimiento */}
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', marginBottom: '14px' }}>
+            
+            <div style={{ background: '#F8FAFC', padding: '12px', borderRadius: '12px', border: '1px solid var(--border-subtle)' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '10px', color: 'var(--text-muted)', fontWeight: 800, textTransform: 'uppercase', marginBottom: '4px' }}>
+                <Clock size={14} color="var(--primary-blue)" /> Horario de Servicio
+              </div>
+              <div style={{ fontSize: '14px', fontWeight: 800, color: 'var(--primary-navy)' }}>
+                {horario}
+              </div>
+            </div>
+
+            <div style={{ background: '#F8FAFC', padding: '12px', borderRadius: '12px', border: '1px solid var(--border-subtle)' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '10px', color: 'var(--text-muted)', fontWeight: 800, textTransform: 'uppercase', marginBottom: '4px' }}>
+                <Gauge size={14} color="var(--primary-blue)" /> Presión Estimada
+              </div>
+              <div style={{ fontSize: '14px', fontWeight: 800, color: 'var(--primary-navy)' }}>
+                {presion}
+              </div>
+            </div>
+
+          </div>
+
+          {/* Barra de Presurización de Red */}
+          <div style={{ marginBottom: '14px' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '11px', color: 'var(--text-muted)', marginBottom: '4px', fontWeight: 700 }}>
+              <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                <Activity size={13} color={estadoHeroConfig.colorPrincipal} /> Nivel de flujo residencial
+              </span>
+              <span style={{ color: estadoHeroConfig.colorPrincipal, fontWeight: 800 }}>{presionPorcentaje}%</span>
+            </div>
+            <div style={{ width: '100%', height: '8px', background: '#E2E8F0', borderRadius: '4px', overflow: 'hidden' }}>
+              <div 
+                style={{ 
+                  width: `${presionPorcentaje}%`, 
+                  height: '100%', 
+                  background: estadoHeroConfig.colorPrincipal,
+                  borderRadius: '4px',
+                  transition: 'width 0.5s ease'
+                }} 
+              />
+            </div>
+          </div>
+
+          {/* Recomendación Institucional */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '12px', color: 'var(--primary-navy)', background: '#F0F9FF', padding: '10px 12px', borderRadius: '10px', border: '1px solid #BAE6FD', marginBottom: '14px' }}>
+            <ShieldCheck size={18} color="var(--water-accent)" style={{ flexShrink: 0 }} />
+            <span><b>Recomendación:</b> {cisternaRecomendada}</span>
+          </div>
+
+          {/* BOTÓN DESTACADO AL CALENDARIO DE ESTA COLONIA */}
+          <button
+            onClick={onVerCalendarioColonia}
+            className="btn-solid"
+            style={{ background: 'var(--primary-navy)', color: 'white', borderRadius: '12px', height: '46px' }}
+          >
+            <CalendarIcon size={18} color="#38BDF8" />
+            <span>Ver Calendario de {colonia.nombre}</span>
+            <ChevronRight size={18} />
+          </button>
+
+        </div>
+      </div>
+
+      {/* 2. BARRA DE HERRAMIENTAS: GEOLOCALIZACIÓN Y BÚSQUEDA */}
       <div className="clean-card" style={{ padding: '14px', marginBottom: 0 }}>
         <button
           onClick={handleDetectarUbicacion}
           disabled={obteniendoGps}
           style={{
             width: '100%',
-            height: '46px',
-            background: 'var(--primary-navy)',
-            color: 'white',
-            border: 'none',
-            borderRadius: '12px',
-            fontSize: '13px',
-            fontWeight: 700,
+            height: '44px',
+            background: 'var(--water-light)',
+            color: 'var(--primary-blue)',
+            border: '1px solid #BAE6FD',
+            borderRadius: '10px',
+            fontSize: '12px',
+            fontWeight: 800,
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
             gap: '8px',
             cursor: 'pointer',
-            marginBottom: '12px'
+            marginBottom: '10px'
           }}
         >
-          <Navigation size={16} color="#38BDF8" />
-          <span>{obteniendoGps ? 'Detectando tu sector...' : 'Usar mi ubicación actual (GPS)'}</span>
+          <Navigation size={16} color="var(--water-accent)" />
+          <span>{obteniendoGps ? 'Detectando sector...' : 'Usar mi ubicación actual (GPS)'}</span>
         </button>
 
         {gpsMensaje && (
-          <div style={{ fontSize: '11px', color: 'var(--water-accent)', fontWeight: 700, textAlign: 'center', marginBottom: '10px', background: 'var(--water-light)', padding: '6px 10px', borderRadius: '8px' }}>
+          <div style={{ fontSize: '11px', color: 'var(--water-accent)', fontWeight: 700, textAlign: 'center', marginBottom: '8px' }}>
             ✓ {gpsMensaje}
           </div>
         )}
@@ -103,85 +246,25 @@ export default function WaterStatusCard({ colonia, colonias, onSelectColonia, on
             onChange={(e) => setBusqueda(e.target.value)}
             style={{
               width: '100%',
-              height: '42px',
+              height: '40px',
               background: '#F8FAFC',
               border: '1px solid var(--border-subtle)',
-              borderRadius: '10px',
+              borderRadius: '8px',
               padding: '0 12px 0 36px',
               fontSize: '13px',
               color: 'var(--primary-navy)',
               outline: 'none'
             }}
           />
-          <Search size={16} color="var(--text-muted)" style={{ position: 'absolute', left: '12px', top: '13px', pointerEvents: 'none' }} />
+          <Search size={16} color="var(--text-muted)" style={{ position: 'absolute', left: '12px', top: '12px', pointerEvents: 'none' }} />
         </div>
       </div>
 
-      {/* 2. TARJETA PRINCIPAL CON BOTÓN DIRECTO AL CALENDARIO DE ESTA COLONIA */}
-      <div className="clean-card" style={{ marginBottom: 0, borderLeft: `6px solid ${estado === 'con_agua' ? '#10B981' : estado === 'mantenimiento' ? '#F97316' : '#94A3B8'}` }}>
-        
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px' }}>
-          <span style={{ background: estadoBadge.bg, color: estadoBadge.color, padding: '4px 10px', borderRadius: '6px', fontSize: '11px', fontWeight: 800, display: 'inline-flex', alignItems: 'center', gap: '5px' }}>
-            {estadoBadge.icon}
-            {estadoBadge.texto}
-          </span>
-          <span style={{ fontSize: '11px', color: 'var(--text-muted)', fontWeight: 600 }}>
-            {colonia.zona}
-          </span>
-        </div>
-
-        <h2 style={{ fontSize: '24px', fontWeight: 800, color: 'var(--primary-navy)', margin: '4px 0 2px 0' }}>
-          {colonia.nombre}
-        </h2>
-        <p style={{ fontSize: '12px', color: 'var(--text-muted)', marginBottom: '14px' }}>
-          Estado del servicio de agua potable en esta zona
-        </p>
-
-        {/* Métricas */}
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', marginBottom: '12px' }}>
-          <div style={{ background: '#F8FAFC', padding: '12px', borderRadius: '10px', border: '1px solid var(--border-subtle)' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '10px', color: 'var(--text-muted)', fontWeight: 800, textTransform: 'uppercase', marginBottom: '4px' }}>
-              <Clock size={13} color="var(--primary-blue)" /> Horario
-            </div>
-            <div style={{ fontSize: '13px', fontWeight: 800, color: 'var(--primary-navy)' }}>
-              {horario}
-            </div>
-          </div>
-
-          <div style={{ background: '#F8FAFC', padding: '12px', borderRadius: '10px', border: '1px solid var(--border-subtle)' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '10px', color: 'var(--text-muted)', fontWeight: 800, textTransform: 'uppercase', marginBottom: '4px' }}>
-              <Gauge size={13} color="var(--primary-blue)" /> Presión
-            </div>
-            <div style={{ fontSize: '13px', fontWeight: 800, color: 'var(--primary-navy)' }}>
-              {presion}
-            </div>
-          </div>
-        </div>
-
-        {/* Recomendación */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '12px', color: 'var(--primary-navy)', background: '#F0F9FF', padding: '8px 12px', borderRadius: '8px', border: '1px solid #BAE6FD', marginBottom: '14px' }}>
-          <ShieldCheck size={16} color="var(--water-accent)" />
-          <span><b>Tip:</b> {cisternaRecomendada}</span>
-        </div>
-
-        {/* BOTÓN DESTACADO PARA IR DIRECTO AL CALENDARIO DE ESTA COLONIA */}
-        <button
-          onClick={onVerCalendarioColonia}
-          className="btn-solid"
-          style={{ background: 'var(--water-accent)', color: 'white', borderRadius: '10px', height: '44px' }}
-        >
-          <CalendarIcon size={18} />
-          <span>Ver Calendario Mensual de {colonia.nombre}</span>
-          <ChevronRight size={18} />
-        </button>
-
-      </div>
-
-      {/* 3. LISTADO DE COLONIAS */}
+      {/* 3. LISTADO ATRACTIVO DE TODAS LAS COLONIAS */}
       <div>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px', padding: '0 2px' }}>
           <span style={{ fontSize: '12px', fontWeight: 800, color: 'var(--primary-navy)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
-            Seleccionar otra Colonia ({coloniasFiltradas.length})
+            Sectores de La Paz ({coloniasFiltradas.length})
           </span>
         </div>
 
@@ -189,9 +272,9 @@ export default function WaterStatusCard({ colonia, colonias, onSelectColonia, on
           {coloniasFiltradas.map((c) => {
             const isSelected = c.id === colonia.id;
             const badge = {
-              con_agua: { texto: 'Con Agua', color: '#10B981', bg: '#E6F9F0' },
-              sin_agua: { texto: 'Sin Agua', color: '#64748B', bg: '#F1F5F9' },
-              mantenimiento: { texto: 'Obra', color: '#F97316', bg: '#FFEDD5' }
+              con_agua: { texto: 'Con Agua', color: '#047857', bg: '#E6F9F0', icono: <CheckCircle2 size={13} color="#10B981" /> },
+              sin_agua: { texto: 'Sin Agua', color: '#475569', bg: '#F1F5F9', icono: <AlertTriangle size={13} color="#64748B" /> },
+              mantenimiento: { texto: 'Obra', color: '#C2410C', bg: '#FFEDD5', icono: <Wrench size={13} color="#F97316" /> }
             }[c.estado];
 
             return (
@@ -213,16 +296,16 @@ export default function WaterStatusCard({ colonia, colonias, onSelectColonia, on
                 <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                   <div 
                     style={{ 
-                      width: '32px', 
-                      height: '32px', 
-                      borderRadius: '8px', 
+                      width: '34px', 
+                      height: '34px', 
+                      borderRadius: '10px', 
                       background: badge.bg, 
                       display: 'flex', 
                       alignItems: 'center', 
                       justifyContent: 'center' 
                     }}
                   >
-                    <MapPin size={16} color={badge.color} />
+                    <MapPin size={18} color={badge.color} />
                   </div>
                   <div>
                     <h4 style={{ fontSize: '14px', fontWeight: 800, color: 'var(--primary-navy)', margin: 0 }}>
@@ -241,10 +324,14 @@ export default function WaterStatusCard({ colonia, colonias, onSelectColonia, on
                       fontWeight: 800, 
                       color: badge.color, 
                       background: badge.bg, 
-                      padding: '3px 8px', 
-                      borderRadius: '6px' 
+                      padding: '4px 8px', 
+                      borderRadius: '6px',
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: '4px'
                     }}
                   >
+                    {badge.icono}
                     {badge.texto}
                   </span>
                   <ChevronRight size={16} color="var(--text-muted)" />
