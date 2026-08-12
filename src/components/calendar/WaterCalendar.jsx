@@ -5,23 +5,24 @@ import { PERCANCES_MOCK } from '../../data/mockData';
 export default function WaterCalendar({ colonia }) {
   const [diaSeleccionado, setDiaSeleccionado] = useState(null);
 
+  // Obtener el día actual en tiempo real del sistema
+  const hoyReal = new Date().getDate(); // Ej. 12
+
   const diasMes = Array.from({ length: 31 }, (_, i) => i + 1);
 
-  // Obtener percances configurados para la colonia activa
   const percancesColonia = PERCANCES_MOCK[colonia.id] || [];
 
   const getEstadoDia = (dia) => {
-    // Verificar si hay percance específico en esta fecha para la colonia activa
     const percance = percancesColonia.find((p) => p.dia === dia);
     if (percance) {
       return { tipo: 'percance', data: percance };
     }
 
-    if (colonia.estado === 'mantenimiento' && dia === 12) {
+    if (colonia.estado === 'mantenimiento' && dia === hoyReal) {
       return { 
         tipo: 'percance', 
         data: { 
-          dia: 12, 
+          dia: hoyReal, 
           tipo: 'obra_general', 
           titulo: 'Mantenimiento de Red Principal', 
           badge: 'Obra SAPA', 
@@ -37,7 +38,6 @@ export default function WaterCalendar({ colonia }) {
     return { tipo: 'sin_agua' };
   };
 
-  // Íconos visuales de percance
   const renderIconoPercance = (nombreIcono, size = 16, color = '#FFFFFF') => {
     switch (nombreIcono) {
       case 'ZapOff': return <ZapOff size={size} color={color} />;
@@ -53,7 +53,7 @@ export default function WaterCalendar({ colonia }) {
   return (
     <div style={{ paddingBottom: '20px' }}>
       
-      {/* Header Limpio con la Colonia Específica */}
+      {/* Header */}
       <div className="clean-card" style={{ marginBottom: '16px', borderTop: '4px solid var(--water-accent)' }}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '6px' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
@@ -76,27 +76,27 @@ export default function WaterCalendar({ colonia }) {
         </div>
 
         <p style={{ fontSize: '12px', color: 'var(--text-muted)' }}>
-          Días normales de tandeo: <b>{totalDiasConAgua} días</b>. Toca los días con marcas de alerta para revisar incidencias o cortes técnicos.
+          Días con tandeo: <b>{totalDiasConAgua} días</b>. El día de hoy está resaltado con un marco destacado.
         </p>
 
-        {/* Leyenda de colores ampliada con Percances */}
+        {/* Leyenda */}
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px', marginTop: '12px', paddingTop: '10px', borderTop: '1px solid var(--border-subtle)' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '11px', fontWeight: 700, color: 'var(--water-accent)' }}>
             <Droplet size={13} color="var(--water-accent)" /> Con Agua
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '11px', fontWeight: 700, color: 'var(--no-water-gray)' }}>
-            <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#CBD5E1' }} /> Sin Agua Programado
+            <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#CBD5E1' }} /> Sin Agua
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '11px', fontWeight: 700, color: '#D90429' }}>
-            <AlertOctagon size={13} color="#D90429" /> Fuga de Red / Ruptura
+            <AlertOctagon size={13} color="#D90429" /> Ruptura / Fuga
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '11px', fontWeight: 700, color: '#E85D04' }}>
-            <ZapOff size={13} color="#E85D04" /> Corte CFE / Mantenimiento
+            <ZapOff size={13} color="#E85D04" /> Corte CFE / Obra
           </div>
         </div>
       </div>
 
-      {/* Grid del Mes */}
+      {/* Grid del Mes con el Día de HOY Resaltado */}
       <div className="clean-card">
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', textAlign: 'center', gap: '4px', marginBottom: '8px' }}>
           {['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'].map((d) => (
@@ -109,7 +109,7 @@ export default function WaterCalendar({ colonia }) {
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: '6px' }}>
           {diasMes.map((dia) => {
             const estadoObj = getEstadoDia(dia);
-            const isHoy = dia === 12;
+            const isHoy = dia === hoyReal;
 
             let bg = '#F8FAFC';
             let color = 'var(--text-dark)';
@@ -132,12 +132,16 @@ export default function WaterCalendar({ colonia }) {
                 key={dia}
                 onClick={() => setDiaSeleccionado({ dia, estadoObj })}
                 style={{
-                  height: '44px',
-                  borderRadius: '8px',
+                  height: '46px',
+                  borderRadius: '10px',
                   background: bg,
                   color: color,
-                  border: isHoy ? '2px solid var(--primary-navy)' : border,
-                  fontWeight: 700,
+                  // Resaltado visual prominente para el día de HOY
+                  border: isHoy ? '3px solid #0F172A' : border,
+                  boxShadow: isHoy ? '0 0 0 2px #38BDF8, 0 4px 12px rgba(0,0,0,0.15)' : 'none',
+                  transform: isHoy ? 'scale(1.05)' : 'none',
+                  zIndex: isHoy ? 10 : 1,
+                  fontWeight: 800,
                   fontSize: '13px',
                   display: 'flex',
                   flexDirection: 'column',
@@ -149,15 +153,15 @@ export default function WaterCalendar({ colonia }) {
               >
                 <span>{dia}</span>
 
-                {/* Ícono de Percance en la esquina del día */}
                 {iconElement && (
                   <div style={{ position: 'absolute', top: '2px', right: '3px' }}>
                     {iconElement}
                   </div>
                 )}
 
+                {/* Badge HOY Prominente */}
                 {isHoy && (
-                  <span style={{ fontSize: '7px', background: 'var(--primary-navy)', color: 'white', padding: '1px 3px', borderRadius: '3px', position: 'absolute', bottom: '2px' }}>
+                  <span style={{ fontSize: '8px', background: '#0F172A', color: '#38BDF8', padding: '1px 4px', borderRadius: '4px', position: 'absolute', bottom: '2px', fontWeight: 900, letterSpacing: '0.5px' }}>
                     HOY
                   </span>
                 )}
@@ -167,7 +171,7 @@ export default function WaterCalendar({ colonia }) {
         </div>
       </div>
 
-      {/* Bottom Sheet Interactivo con Diseño Específico de Percance */}
+      {/* Bottom Sheet */}
       {diaSeleccionado && (
         <div className="bottom-sheet-overlay" onClick={() => setDiaSeleccionado(null)}>
           <div className="bottom-sheet" onClick={(e) => e.stopPropagation()}>
@@ -179,7 +183,7 @@ export default function WaterCalendar({ colonia }) {
                   Detalle para {colonia.nombre}
                 </span>
                 <h3 style={{ fontSize: '18px', fontWeight: 800, color: 'var(--primary-navy)' }}>
-                  {diaSeleccionado.dia} de Agosto, 2026
+                  {diaSeleccionado.dia} de Agosto, 2026 {diaSeleccionado.dia === hoyReal ? '(HOY)' : ''}
                 </h3>
               </div>
               <button 
@@ -190,7 +194,6 @@ export default function WaterCalendar({ colonia }) {
               </button>
             </div>
 
-            {/* SI HAY UN PERCANCE REGISTRADO EN ESTE DÍA */}
             {diaSeleccionado.estadoObj.tipo === 'percance' ? (
               <div 
                 style={{ 
@@ -207,7 +210,7 @@ export default function WaterCalendar({ colonia }) {
                     {diaSeleccionado.estadoObj.data.badge}
                   </span>
                   <span style={{ fontSize: '11px', fontWeight: 700, color: diaSeleccionado.estadoObj.data.color }}>
-                    Incidencia Reportada
+                    Incidencia Registrada
                   </span>
                 </div>
 
@@ -220,11 +223,10 @@ export default function WaterCalendar({ colonia }) {
                 </p>
 
                 <div style={{ background: 'white', padding: '8px 10px', borderRadius: '6px', fontSize: '11px', color: 'var(--text-muted)', fontWeight: 600 }}>
-                  ⚠️ <b>Impacto estimado:</b> Retraso temporal o interrupción de bombeo durante la jornada.
+                  ⚠️ <b>Impacto:</b> Posible reducción de presión durante la jornada.
                 </div>
               </div>
             ) : (
-              /* DÍA NORMAL (CON O SIN AGUA) */
               <div style={{ padding: '14px', background: '#F8FAFC', borderRadius: '12px', border: '1px solid var(--border-subtle)', marginBottom: '16px' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '6px' }}>
                   <Clock size={18} color="var(--water-accent)" />
@@ -236,14 +238,14 @@ export default function WaterCalendar({ colonia }) {
                 </div>
                 <p style={{ fontSize: '12px', color: 'var(--text-muted)' }}>
                   {diaSeleccionado.estadoObj.tipo === 'con_agua'
-                    ? `Servicio continuo en la red de ${colonia.nombre}. Se recomienda encender equipo de bombeo.`
+                    ? `Servicio continuo en la red de ${colonia.nombre}. Se recomienda encender el equipo de bombeo.`
                     : 'Día de descanso de red para presurización de sectores contiguos.'}
                 </p>
               </div>
             )}
 
             <button className="btn-solid" onClick={() => setDiaSeleccionado(null)}>
-              Entendido
+              Cerrar Detalle
             </button>
           </div>
         </div>
