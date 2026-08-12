@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Droplet, Sun, Moon, CloudRain, ShieldCheck, Thermometer, Sparkles, CheckCircle2, ChevronRight, Info, Lightbulb, Clock, Calculator, Users, Leaf, ArrowRight, Gauge } from 'lucide-react';
+import { Droplet, Sun, Moon, CloudRain, ShieldCheck, Thermometer, Sparkles, CheckCircle2, ChevronRight, Info, Lightbulb, Clock, Calculator, Users, Leaf, ArrowRight, Gauge, Plant, ShowerHead, WashingMachine, AlertCircle } from 'lucide-react';
 
 export default function WaterTipsGuide() {
   const [tipSeleccionado, setTipSeleccionado] = useState(null);
@@ -7,21 +7,18 @@ export default function WaterTipsGuide() {
   // Estados de la Calculadora de Consumo Domiciliario
   const [numPersonas, setNumPersonas] = useState(3);
   const [minutosDucha, setMinutosDucha] = useState(10);
-  const [frecuenciaLavado, setFrecuenciaLavado] = useState(3); // Cargas a la semana
+  const [frecuenciaLavado, setFrecuenciaLavado] = useState(3);
   const [tieneJardin, setTieneJardin] = useState(false);
 
   // Lógica de Cálculo de Consumo (Litros por Persona al día)
-  // Ducha: ~9L por minuto. Sanitarios: ~24L/día persona. Lavado de trastes/ropa y aseo: ~40L/día persona.
   const litrosDuchaPersona = minutosDucha * 9;
-  const litrosInodoroYAseo = 30; // Promedio estándar
-  const litrosRopaTrastesPersona = (frecuenciaLavado * 60) / 7; // Distribución diaria
+  const litrosInodoroYAseo = 30;
+  const litrosRopaTrastesPersona = (frecuenciaLavado * 60) / 7;
   const litrosJardinPersona = tieneJardin ? 25 : 0;
 
-  // Consumo Real Estimado por Persona al Día
   const consumoPromedioPersona = Math.round(litrosDuchaPersona + litrosInodoroYAseo + litrosRopaTrastesPersona + litrosJardinPersona);
   const consumoTotalHogar = consumoPromedioPersona * numPersonas;
 
-  // Consumo Ecológico Sostenible Recomendado (OMS / Meta Ambiental BCS): 100 L/día persona
   const META_ECOLOGICA_PERSONA = 100;
   const metaTotalHogar = META_ECOLOGICA_PERSONA * numPersonas;
 
@@ -104,7 +101,7 @@ export default function WaterTipsGuide() {
         </p>
       </div>
 
-      {/* 🧮 CALCULADORA INTERACTIVA DE CONSUMO HÍDRICO HOGAR VS META ECOLÓGICA */}
+      {/* CALCULADORA DE CONSUMO (ÍCONOS SVG EXCLUSIVOS) */}
       <div className="clean-card" style={{ marginBottom: '16px', border: '1.5px solid var(--water-accent)', background: '#F8FAFC' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '10px', borderBottom: '1px solid var(--border-subtle)', paddingBottom: '8px' }}>
           <div style={{ background: 'var(--primary-navy)', padding: '6px', borderRadius: '8px', color: 'white' }}>
@@ -120,13 +117,15 @@ export default function WaterTipsGuide() {
           </div>
         </div>
 
-        {/* Formulario Interactivo de Parámetros */}
+        {/* Parámetros con Íconos SVG */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginBottom: '14px' }}>
           
           {/* Número de Habitantes */}
           <div>
             <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '11px', fontWeight: 700, color: 'var(--primary-navy)', marginBottom: '4px' }}>
-              <span>👥 Habitantes en la casa:</span>
+              <span style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
+                <Users size={14} color="var(--primary-blue)" /> Habitantes en la casa:
+              </span>
               <span style={{ color: 'var(--water-accent)', fontWeight: 800 }}>{numPersonas} personas</span>
             </div>
             <input
@@ -139,10 +138,12 @@ export default function WaterTipsGuide() {
             />
           </div>
 
-          {/* Minutos en la Ducha por persona */}
+          {/* Duración de Ducha */}
           <div>
             <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '11px', fontWeight: 700, color: 'var(--primary-navy)', marginBottom: '4px' }}>
-              <span>🚿 Duración promedio de ducha:</span>
+              <span style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
+                <Droplet size={14} color="#0284C7" /> Duración promedio de ducha:
+              </span>
               <span style={{ color: 'var(--water-accent)', fontWeight: 800 }}>{minutosDucha} minutos</span>
             </div>
             <input
@@ -155,10 +156,12 @@ export default function WaterTipsGuide() {
             />
           </div>
 
-          {/* Cargas de lavadora a la semana */}
+          {/* Cargas de lavadora */}
           <div>
             <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '11px', fontWeight: 700, color: 'var(--primary-navy)', marginBottom: '4px' }}>
-              <span>🧺 Cargas de lavadora por semana:</span>
+              <span style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
+                <ShieldCheck size={14} color="#10B981" /> Cargas de lavadora por semana:
+              </span>
               <span style={{ color: 'var(--water-accent)', fontWeight: 800 }}>{frecuenciaLavado} cargas</span>
             </div>
             <input
@@ -171,19 +174,21 @@ export default function WaterTipsGuide() {
             />
           </div>
 
-          {/* Opción de Jardín / Plantas */}
+          {/* Opción de Jardín */}
           <label style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', fontSize: '12px', fontWeight: 700, color: 'var(--primary-navy)' }}>
             <input
               type="checkbox"
               checked={tieneJardin}
               onChange={(e) => setTieneJardin(e.target.checked)}
             />
-            <span>🌱 Tengo jardín o macetas grandes que requieren riego constante</span>
+            <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+              <Leaf size={14} color="#10B981" /> Tengo jardín o macetas grandes que requieren riego
+            </span>
           </label>
 
         </div>
 
-        {/* COMPARATIVA VISUAL: CONSUMO ESTIMADO VS CONSUMO ECOLÓGICO */}
+        {/* COMPARATIVA VISUAL */}
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px', marginBottom: '12px' }}>
           
           {/* Consumo Calculado Actual */}
@@ -199,7 +204,7 @@ export default function WaterTipsGuide() {
             </span>
           </div>
 
-          {/* Meta Ecológica Recomendada */}
+          {/* Meta Ecológica */}
           <div style={{ background: '#F0F9FF', padding: '10px 12px', borderRadius: '10px', border: '1px solid #BAE6FD' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '10px', fontWeight: 800, color: 'var(--water-accent)', textTransform: 'uppercase' }}>
               <Leaf size={12} color="#10B981" /> Meta Ecológica
@@ -214,22 +219,25 @@ export default function WaterTipsGuide() {
 
         </div>
 
-        {/* VERDICTO Y CONSEJO ECOLÓGICO */}
+        {/* VERDICTO CON SVG */}
         <div style={{ padding: '8px 12px', borderRadius: '8px', background: esConsumoEcológico ? '#E6F9F0' : '#FEF3C7', border: `1px solid ${esConsumoEcológico ? '#10B981' : '#F59E0B'}`, fontSize: '12px', color: 'var(--primary-navy)' }}>
           {esConsumoEcológico ? (
             <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontWeight: 700, color: '#047857' }}>
-              <CheckCircle2 size={16} /> ¡Felicidades! Tu hogar está dentro del rango de Consumo Ecológico Sostenible.
+              <CheckCircle2 size={16} color="#10B981" /> ¡Excelente! Tu hogar está dentro del rango de Consumo Ecológico Sostenible.
             </div>
           ) : (
-            <div style={{ fontWeight: 600 }}>
-              🌿 <b>Oportunidad de Apoyo Ambiental:</b> Consumes <b>{diferenciaConsumo} Litros más</b> del objetivo ecológico por persona. Reduciendo la ducha a 5 min ahorrarías hasta <b>{numPersonas * 45} Litros al día</b> en tu hogar.
+            <div style={{ display: 'flex', alignItems: 'flex-start', gap: '6px', fontWeight: 600, color: '#B45309' }}>
+              <Leaf size={16} color="#D97706" style={{ flexShrink: 0, marginTop: '2px' }} />
+              <span>
+                <b>Oportunidad de Apoyo Ambiental:</b> Consumes <b>{diferenciaConsumo} L/día más</b> por persona. Reduciendo la ducha a 5 min ahorrarías hasta <b>{numPersonas * 45} Litros al día</b> en tu hogar.
+              </span>
             </div>
           )}
         </div>
 
       </div>
 
-      {/* RECOMENDACIÓN DÍA / NOCHE */}
+      {/* RECOMENDACIÓN DÍA / NOCHE CON SVG */}
       <div 
         className="clean-card" 
         style={{ 
@@ -242,8 +250,8 @@ export default function WaterTipsGuide() {
         <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '11px', fontWeight: 800, color: '#38BDF8', textTransform: 'uppercase', marginBottom: '6px' }}>
           <Clock size={14} /> Recomendación para el horario actual (Día / Noche)
         </div>
-        <h4 style={{ fontSize: '16px', fontWeight: 800, marginBottom: '4px' }}>
-          ☀️ Durante el día (Horas de Sol)
+        <h4 style={{ fontSize: '15px', fontWeight: 800, marginBottom: '4px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+          <Sun size={18} color="#FFD166" /> Durante el día (Horas de Sol)
         </h4>
         <p style={{ fontSize: '12px', opacity: 0.9, lineHeight: '1.4' }}>
           Prioriza el <b>llenado de tinacos</b> y reserva de aljibe. Evita regar plantas o lavar patios con manguera debido al alto índice de evaporación por temperatura.
